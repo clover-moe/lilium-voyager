@@ -19,7 +19,7 @@ Differences from ioEF 1.38-rc1 (2011):
   * Support for ioquake3's OpenGL2 renderer.
 
 Lilium Voyager is based on [Lilium Arena](https://github.com/clover-moe/lilium-arena).
-Lilium Voyager code commits: [compare/upstream...master](https://github.com/clover-moe/lilium-voyager/compare/upstream...master)
+Lilium Voyager code commits: [compare/lilium-arena...master](https://github.com/clover-moe/lilium-voyager/compare/lilium-arena...master)
 
 The source code for the _Elite Force Holomatch_ game, cgame, and ui code is not included as it remains under a non-free license.
 
