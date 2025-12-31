@@ -225,12 +225,12 @@ done
 cd `dirname $0`
 
 if [ ! -f Makefile ]; then
-	echo "$0 must be run from the ioquake3 build directory"
+	echo "$0 must be run from the Lilium Arena build directory"
 	exit 1
 fi
 
 if [ "${IOQ3_CLIENT_ARCHS}" == "" ]; then
-	echo "$0: no ioquake3 binary architectures were found for target '${TARGET_NAME}'"
+	echo "$0: no Lilium Arena binary architectures were found for target '${TARGET_NAME}'"
 	exit 1
 fi
 
@@ -401,8 +401,25 @@ function action()
 action "${BUNDLEBINDIR}/${EXECUTABLE_NAME}"				"${IOQ3_CLIENT_ARCHS}"
 action "${BUNDLEBINDIR}/${DEDICATED_NAME}"				"${IOQ3_SERVER_ARCHS}"
 
+#
+# enable this to create multi-arch libraries and symlinks. however it doesn't
+# work well with the default zip behavior (duplicates files instead of keeping
+# symlinks).
+#
+MERGE_LIBS=0
+
+if [ $MERGE_LIBS -eq 0 ]; then
+
+# renderers
+cp ${IOQ3_RENDERER_GL1_ARCHS} "${BUNDLEBINDIR}/"
+cp ${IOQ3_RENDERER_GL2_ARCHS} "${BUNDLEBINDIR}/"
+
+else
+
 # renderers
 action "${BUNDLEBINDIR}/${RENDERER_OPENGL1_NAME}"		"${IOQ3_RENDERER_GL1_ARCHS}"
 action "${BUNDLEBINDIR}/${RENDERER_OPENGL2_NAME}"		"${IOQ3_RENDERER_GL2_ARCHS}"
 symlinkArch "${RENDERER_OPENGL}1" "${RENDERER_OPENGL}1" "_" "${BUNDLEBINDIR}"
 symlinkArch "${RENDERER_OPENGL}2" "${RENDERER_OPENGL}2" "_" "${BUNDLEBINDIR}"
+
+fi # MERGE_LIBS

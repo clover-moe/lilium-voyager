@@ -144,6 +144,7 @@ Makefile.local:
   BUILD_STANDALONE     - build binaries suited for stand-alone games
   SERVERBIN            - rename 'ioq3ded' server binary
   CLIENTBIN            - rename 'ioquake3' client binary
+  RENDERER_PREFIX      - rename 'renderer_' renderer binaries
   USE_RENDERER_DLOPEN  - build and use the renderer in a library
   BUILD_RENDERER_OPENGL1 build the opengl1 client / renderer library
   BUILD_RENDERER_OPENGL2 build the opengl2 client / renderer library
