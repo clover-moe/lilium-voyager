@@ -1405,9 +1405,13 @@ static void IN_ProcessEvents( void )
 								break;
 							}
 
-							Cvar_SetValue( "r_customwidth", width );
-							Cvar_SetValue( "r_customheight", height );
-							Cvar_Set( "r_mode", "-1" );
+							// keep the windowed size when desktop fullscreen resizes the window
+							if( !( SDL_GetWindowFlags( SDL_window ) & SDL_WINDOW_FULLSCREEN ) )
+							{
+								Cvar_SetValue( "r_customwidth", width );
+								Cvar_SetValue( "r_customheight", height );
+								Cvar_Set( "r_mode", "-1" );
+							}
 
 #ifdef USE_FLEXIBLE_DISPLAY
 							if ( cl_flexibleDisplay->integer && re.ResizeWindow && re.ResizeWindow( width, height ) )
