@@ -35,6 +35,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 #include "../sys/sys_local.h"
 #include "sdl_icon.h"
 
+#ifdef __APPLE__
+#ifdef USE_LOCAL_HEADERS
+#	include "SDL_syswm.h"
+#else
+#	include <SDL_syswm.h>
+#endif
+#include <objc/runtime.h>
+#include <objc/message.h>
+#endif
+
 typedef enum
 {
 	RSERR_OK,
@@ -1204,6 +1214,44 @@ GLimp_EndFrame
 Responsible for doing a swapbuffers
 ===============
 */
+#ifdef __APPLE__
+static id GLimp_NSWindow( void )
+{
+	SDL_SysWMinfo info;
+
+	SDL_VERSION( &info.version );
+	if ( !SDL_window || !SDL_GetWindowWMInfo( SDL_window, &info ) || info.subsystem != SDL_SYSWM_COCOA )
+		return nil;
+	return (id)info.info.cocoa.window;
+}
+
+/*
+The window is in a native macOS fullscreen Space (green title-bar button,
+Ctrl+Cmd+F), which SDL doesn't report as fullscreen. SDL_SetWindowFullscreen
+on such a window clears NSWindowStyleMaskFullScreen outside of a fullscreen
+transition, and AppKit throws an uncaught exception for that.
+*/
+static qboolean GLimp_InFullscreenSpace( void )
+{
+	id win = GLimp_NSWindow();
+	unsigned long mask;
+
+	if ( !win )
+		return qfalse;
+	mask = ((unsigned long (*)( id, SEL ))objc_msgSend)( win, sel_registerName( "styleMask" ) );
+	return ( mask & ( 1UL << 14 ) ) ? qtrue : qfalse;	// NSWindowStyleMaskFullScreen
+}
+
+// leave the fullscreen Space the way the green button does
+static void GLimp_LeaveFullscreenSpace( void )
+{
+	id win = GLimp_NSWindow();
+
+	if ( win )
+		((void (*)( id, SEL, id ))objc_msgSend)( win, sel_registerName( "toggleFullScreen:" ), nil );
+}
+#endif
+
 void GLimp_EndFrame( void )
 {
 	// don't flip if drawing to front buffer
@@ -1211,6 +1259,18 @@ void GLimp_EndFrame( void )
 	{
 		SDL_GL_SwapWindow( SDL_window );
 	}
+
+#ifdef __APPLE__
+	if( r_fullscreen->modified && GLimp_InFullscreenSpace( ) )
+	{
+		// Alt+Enter in a fullscreen Space: the window looks fullscreen, so leave it
+		ri.Printf( PRINT_ALL, "Leaving macOS fullscreen Space\n" );
+		GLimp_LeaveFullscreenSpace( );
+		ri.Cvar_Set( "r_fullscreen", "0" );
+		r_fullscreen->modified = qfalse;
+		ri.IN_Restart( );
+	}
+#endif
 
 	if( r_fullscreen->modified )
 	{
