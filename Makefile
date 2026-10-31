@@ -548,6 +548,8 @@ ifeq ($(PLATFORM),darwin)
 
       ifneq ($(findstring $(DEFAULT_SDK),10.6 10.7 10.8),)
         MACOSX_VERSION_MIN=10.6
+      else ifeq ($(shell test $(firstword $(subst ., ,$(DEFAULT_SDK))) -ge 11; echo $$?),0)
+        MACOSX_VERSION_MIN=11.0
       else
         MACOSX_VERSION_MIN=10.9
       endif
@@ -665,13 +667,15 @@ ifeq ($(PLATFORM),darwin)
   RENDERER_LIBS += -framework OpenGL
 
   ifeq ($(USE_LOCAL_HEADERS),1)
-    ifeq ($(shell test $(MAC_OS_X_VERSION_MIN_REQUIRED) -ge 1090; echo $$?),0)
-      # Universal Binary 2 - for running on macOS 10.9 or later
-      # x86_64 (10.9 or later), arm64 (11.0 or later)
+    ifeq ($(shell test $(MACOSX_MAJOR) -ge 11; echo $$?),0)
+      # Universal Binary 2 - for running on macOS 11.0 or later
+      # x86_64, arm64
+      #
+      # code/libs/macosx-ub2/libSDL2-2.0.0.dylib is SDL 2.32.8 from ioquake3
       MACLIBSDIR=$(LIBSDIR)/macosx-ub2
       BASE_CFLAGS += -I$(SDLHDIR)/include
     else
-      # Universal Binary - for running on Mac OS X 10.5 or later
+      # Universal Binary - for running on Mac OS X 10.5 to macOS 10.15
       # ppc (10.5/10.6), x86 (10.6 or later), x86_64 (10.6 or later)
       #
       # x86/x86_64 on 10.5 will run the ppc build.

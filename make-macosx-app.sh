@@ -160,14 +160,11 @@ if [ "${CURRENT_ARCH}" != "" ]; then
 	SEARCH_ARCHS="${CURRENT_ARCH}"
 fi
 
-# select SDL run-time dylib
-if [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.5" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.6" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.7" ] \
-  || [ "${MACOSX_DEPLOYMENT_TARGET}" = "10.8" ]; then
-  UNIVERSAL_BINARY=1
-else
+# select SDL run-time dylib (must match the Makefile)
+if [ "${MACOSX_DEPLOYMENT_TARGET%%.*}" -ge 11 ]; then
   UNIVERSAL_BINARY=2
+else
+  UNIVERSAL_BINARY=1
 fi
 
 AVAILABLE_ARCHS=""

@@ -16,7 +16,7 @@ unset ARM64_SDK
 unset ARM64_CFLAGS
 unset ARM64_MACOSX_VERSION_MIN
 
-X86_64_MACOSX_VERSION_MIN="10.9"
+X86_64_MACOSX_VERSION_MIN="11.0"
 ARM64_MACOSX_VERSION_MIN="11.0"
 
 echo "Building X86_64 Client/Dedicated Server"
@@ -53,7 +53,7 @@ echo;echo
 echo
 
 # use the following shell script to build a universal 2 application bundle
-export MACOSX_DEPLOYMENT_TARGET="10.9"
+export MACOSX_DEPLOYMENT_TARGET="11.0"
 export MACOSX_DEPLOYMENT_TARGET_X86_64="$X86_64_MACOSX_VERSION_MIN"
 export MACOSX_DEPLOYMENT_TARGET_ARM64="$ARM64_MACOSX_VERSION_MIN"
 

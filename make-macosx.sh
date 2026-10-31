@@ -89,6 +89,8 @@ elif [ $BUILDARCH = "x86_64" ]; then
 		  || [ "$DEFAULT_SDK" = "10.7" ] \
 		  || [ "$DEFAULT_SDK" = "10.8" ]; then
 			ARCH_MACOSX_VERSION_MIN="10.6"
+		elif [ "${DEFAULT_SDK%%.*}" -ge 11 ]; then
+			ARCH_MACOSX_VERSION_MIN="11.0"
 		else
 			ARCH_MACOSX_VERSION_MIN="10.9"
 		fi
