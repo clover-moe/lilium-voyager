@@ -377,6 +377,9 @@ void Field_VariableSizeDraw( field_t *edit, int x, int y, int width, int size, q
 		Com_Error( ERR_DROP, "drawLen >= MAX_STRING_CHARS" );
 	}
 
+	if ( drawLen < 0 ) {
+		drawLen = 0;
+	}
 	Com_Memcpy( str, edit->buffer + prestep, drawLen );
 	str[ drawLen ] = 0;
 

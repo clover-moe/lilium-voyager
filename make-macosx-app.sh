@@ -309,6 +309,9 @@ done
 echo ""
 
 # make the application bundle directories
+if [ ! -d "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}" ]; then
+	mkdir -p "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}" || exit 1;
+fi
 if [ ${BUILD_BASEGAME} -eq 1 ]; then
 	if [ ! -d "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${BASEGAME}" ]; then
 		mkdir -p "${BUILT_PRODUCTS_DIR}/${EXECUTABLE_FOLDER_PATH}/${BASEGAME}" || exit 1;
